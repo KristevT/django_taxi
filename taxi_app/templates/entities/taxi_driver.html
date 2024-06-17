@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="links">
+        <a class="link" href="{% url 'main_page' %}">На главную</a>
+        <a class="link" href="{% url 'aggregators_page' %}">Агрегаторы</a>
+        <a class="link" href="{% url 'taxi_drivers_page' %}">Таксисты</a>
+        <a class="link" href="{% url 'orders_page' %}">Заказы</a>
+    </div>
+    <hr>
+    <h1 class="title">Таксист</h1>
+    <div class="task-item">
+    <ul class="task-details">
+        {% if messages %}
+        <ul class="error">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        <li>
+            id: {{ taxi_driver.id }}<br>
+            Пользователь создавший задачу: {{ taxi_driver.user }}<br>
+            Имя таксиста: {{ taxi_driver.first_name }}<br>
+            Фамилия таксиста: {{ taxi_driver.last_name }}<br>
+            Номер телефона: {{ taxi_driver.phone_number }}<br>
+            Марка и номер машины: {{ taxi_driver.car }}<br>
+            Принятые заказы:
+            {% for order in taxi_driver.orders.all %}
+                <a class="link-item" href="{% url 'order' order.id %}">{{ order.name }}</a>{% if not forloop.last %}, {% endif %}
+                {% if forloop.last %}
+                    <br>
+                {% endif %}
+            {% endfor %}
+        </li>
+        {% if request.user.is_staff or request.user == task.user %}
+            <form class="form" action="{% url 'put_taxi_driver' taxi_driver.id %}" method="put">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input class="submit-button" type="submit" value="Изменить таксиста">
+            </form>
+            <form class="form" action="{% url 'delete_taxi_driver' taxi_driver.id %}" method="delete">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input class="submit-button" type="submit" value="Удалить таксиста">
+            </form>
+        {% endif %}
+    </ul>
+    </div>
+</div>
+{% endblock %}

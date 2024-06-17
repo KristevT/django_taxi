@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="links">
+        <a class="link" href="{% url 'main_page' %}">На главную</a>
+        <a class="link" href="{% url 'taxi_drivers_page' %}">Таксисты</a>
+        <a class="link" href="{% url 'aggregators_page' %}">Агрегаторы</a>
+    </div>
+    <hr>
+
+    <h1 class="title">Заказы</h1>
+    <form class="form" action="{% url 'create_order' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input class="submit-button" type="submit" value="Создать заказ">
+    </form>
+    <div class="tasks-container">
+        <div class="tasks-inner">
+            <ul class="order-list">
+                {% for order in orders %}
+                    <li class="task-item">
+                        id: <a class="link-item" href="{% url 'order' order.id %}"> {{ order.id }}</a><br>
+                        Таксист: <a class="link-item" href="{% url 'taxi_driver' order.taxi_driver.id %}">{{ order.taxi_driver }}</a><br>
+                        Название: {{ order.name }}<br>
+                        Дата: {{ order.date }}<br>
+                        Стоимость: {{ order.price }}<br>
+                        Адрес отправления: {{ order.pickup_address }}<br>
+                        Адрес прибытия: {{ order.destination_address }}<br>
+                    {% if not forloop.last %}
+                        <hr>
+                    {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

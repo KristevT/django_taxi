@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'main/create_taxi_driver.css' %}">
+    <style>
+        ul {
+            list-style-type: none;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="links">
+        <a class="link" href="{% url 'main_page' %}">На главную</a>
+        <a class="link" href="{% url 'taxi_drivers_page' %}">Таксисты</a>
+        <a class="link" href="{% url 'aggregators_page' %}">Агрегаторы</a>
+    </div>
+    <hr>
+    <h1 class="title">Изменить таксиста</h1>
+    <div class="task-item">
+        {% if messages %}
+        <ul class="error">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        <form class="form" action="{% url 'put_taxi_driver' taxi_driver.id %}" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input class="submit-button" type="submit" value="Изменить таксиста">
+        </form>
+    </div>
+</div>
+{% endblock %}

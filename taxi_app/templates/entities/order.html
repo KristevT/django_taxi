@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="links">
+        <a class="link" href="{% url 'main_page' %}">На главную</a>
+        <a class="link" href="{% url 'aggregators_page' %}">Агрегаторы</a>
+        <a class="link" href="{% url 'taxi_drivers_page' %}">Таксисты</a>
+        <a class="link" href="{% url 'orders_page' %}">Заказы</a>
+    </div>
+    <hr>
+    <h1 class="title">Заказ</h1>
+    <div class="task-item">
+    <ul class="order-details">
+        <li>
+            id: {{ order.id }}<br>
+            Создан пользователем: {{ order.user }}<br>
+            Таксист: 
+            {% if order.taxi_driver %}
+                <a class="link-item" href="{% url 'taxi_driver' order.taxi_driver.id %}"> {{ order.taxi_driver.first_name }} {{ order.taxi_driver.last_name }}</a><br>
+            {% else %}
+                <p>Нет таксиста</p>
+            {% endif %}
+            Название: {{ order.name }}<br>
+            Дата: {{ order.date }}<br>
+            Стоимость: {{ order.price }}<br>
+            Адрес отправления: {{ order.pickup_address }}<br>
+            Адрес прибытия: {{ order.destination_address }}<br>
+        </li>
+        {% if request.user.is_staff or request.user == aggregator.user %}
+            <form class="form" action="{% url 'put_order' order.id %}" method="put">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input class="submit-button" type="submit" value="Изменить заказ">
+            </form>
+            <form class="form" action="{% url 'delete_order' order.id %}" method="delete">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input class="submit-button" type="submit" value="Удалить заказ">
+            </form>
+        {% endif %}
+    </ul>
+    </div>
+</div>
+{% endblock %}
+

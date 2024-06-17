@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="title">Главная страница сайта</h1>
+    <div class="links">
+        <a class="link-item" href="{% url 'taxi_drivers_page' %}">Таксисты</a>
+        <a class="link-item" href="{% url 'aggregators_page' %}">Агрегаторы</a>
+        <a class="link-item" href="{% url 'orders_page' %}">Заказы</a>
+    </div>
+</div>
+{% endblock %}

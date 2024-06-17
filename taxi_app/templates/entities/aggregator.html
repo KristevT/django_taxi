@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="links">
+        <a class="link" href="{% url 'main_page' %}">На главную</a>
+        <a class="link" href="{% url 'aggregators_page' %}">Агрегаторы</a>
+        <a class="link" href="{% url 'taxi_drivers_page' %}">Таксисты</a>
+        <a class="link" href="{% url 'orders_page' %}">Заказы</a>
+    </div>
+    <hr>
+    <h1 class="title">Агрегатор</h1>
+    <div class="task-item">
+    <ul class="aggregator-details">
+        <li>
+            id: {{ aggregator.id }}<br>
+            Создан пользователем: {{ aggregator.user }}<br>
+            Название: {{ aggregator.name }}<br>
+            Номер телефона: {{ aggregator.phone }}<br>
+            Нанятые таксисты:
+                {% for taxi_driver in aggregator.taxi_drivers.all %}
+                    <a class="link-item" href="{% url 'taxi_driver' taxi_driver.id %}">{{ taxi_driver }}</a>{% if not forloop.last %}, {% endif %}
+                    {% if forloop.last %}
+                        <br>
+                    {% endif %}
+                {% endfor %}
+        </li>
+        {% if request.user.is_staff or request.user == aggregator.user %}
+            <form class="form" action="{% url 'put_aggregator' aggregator.id %}" method="put">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input class="submit-button" type="submit" value="Изменить агрегатор">
+            </form>
+            <form class="form" action="{% url 'delete_aggregator' aggregator.id %}" method="delete">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input class="submit-button" type="submit" value="Удалить агрегатор">
+            </form>
+        {% endif %}
+    </ul>
+    </div>
+</div>
+{% endblock %}

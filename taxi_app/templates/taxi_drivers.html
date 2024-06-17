@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="links">
+        <a class="link" href="{% url 'main_page' %}">На главную</a>
+        <a class="link" href="{% url 'aggregators_page' %}">Агрегаторы</a>
+        <a class="link" href="{% url 'orders_page' %}">Заказы</a>
+    </div>
+    <hr>
+
+    <h1 class="title">Таксисты</h1>
+    <form class="form" action="{% url 'create_taxi_driver' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input class="submit-button" type="submit" value="Добавить таксиста">
+    </form>
+    <div class="tasks-container">
+        <div class="tasks-inner">
+            <ul class="task-list">
+                {% for taxi_driver in taxi_drivers %}
+                    <li class="task-item">
+                        id: <a class="link-item" href="{% url 'taxi_driver' taxi_driver.id %}"> {{ taxi_driver.id }}</a><br>
+                        Пользователь создавший таксиста: {{ taxi_driver.user }}<br>
+                        Имя: {{ taxi_driver.first_name }}<br>
+                        Фамилия: {{ taxi_driver.last_name }}<br>
+                        Телефон: {{ taxi_driver.phone_number }}<br>
+                        Машина: {{ taxi_driver.car }}<br>
+                        Принятые заказы:
+                        {% for order in taxi_driver.orders.all %}
+                            <a class="link-item" href="{% url 'order' order.id %}">{{ order.name }}</a>{% if not forloop.last %}, {% endif %}
+                            {% if forloop.last %}
+                                <br>
+                            {% endif %}
+                        {% endfor %}
+                    </li>
+                    {% if not forloop.last %}
+                        <hr>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
