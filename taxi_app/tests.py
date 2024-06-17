@@ -215,7 +215,13 @@ class UserRegistrationViewTest(TestCase):
 
     def test_registration_new_user(self):
         """Test registration new user."""
-        response = self.client.post('/register/', {'username': 'test_user', 'password': 'test_password'})
+        response = self.client.post(
+            '/register/',
+            {
+                'username': 'test_user',
+                'password': 'test_password',
+            },
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         user = get_user_model().objects.get(username='test_user')
         self.assertIsNotNone(user)
@@ -576,13 +582,21 @@ class AggregatorViewTest(TestCase):
         """Test delete aggregator no permission."""
         self.aggregator = Aggregator.objects.create(name='a', phone='+1', user=self.user)
         self.client.login(username='otheruser', password='otherpass')
-        response = self.client.post(reverse('delete_aggregator', args=[self.aggregator.id]), follow=True)
+        response = self.client.post(
+            reverse(
+                'delete_aggregator',
+                args=[self.aggregator.id],
+            ),
+            follow=True,
+        )
         self.assertRedirects(
             response,
             expected_url=reverse(
-                'aggregator', args=[self.aggregator.id],
+                'aggregator',
+                args=[self.aggregator.id],
             ),
-            status_code=status.HTTP_302_FOUND, target_status_code=status.HTTP_200_OK,
+            status_code=status.HTTP_302_FOUND,
+            target_status_code=status.HTTP_200_OK,
         )
         messages = list(response.context['messages'])
         self.assertEqual(str(messages[0]), 'У вас нет прав на удаление этого агрегатора')
@@ -644,8 +658,12 @@ class OrderViewTests(TestCase):
         response = self.client.post(reverse('delete_order', args=[self.order.id]), follow=True)
         self.assertRedirects(
             response,
-            expected_url=reverse('order', args=[self.order.id]),
-            status_code=status.HTTP_302_FOUND, target_status_code=status.HTTP_200_OK,
+            expected_url=reverse(
+                'order',
+                args=[self.order.id],
+            ),
+            status_code=status.HTTP_302_FOUND,
+            target_status_code=status.HTTP_200_OK,
         )
         messages = list(response.context['messages'])
         self.assertEqual(str(messages[0]), 'У вас нет прав на удаление этого заказа')
