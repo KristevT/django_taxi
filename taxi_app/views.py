@@ -458,14 +458,9 @@ def create_order(request):
         if request.method == POST:
             form = OrderForm(request.POST)
             if form.is_valid():
-                users_orders = Order.objects.filter(user=request.user).exists()
-                if not request.user.is_staff and users_orders:
-                    messages.error(request, 'Вы уже создали заказ')
-                else:
-                    order = form.save(commit=False)
-                    order.user = request.user
-                    order.save()
-                    return redirect('orders_page')
+                order = form.save(commit=False)
+                order.save()
+                return redirect('orders_page')
         else:
             form = OrderForm()
     else:

@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from os import getenv, path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -78,8 +82,16 @@ WSGI_APPLICATION = 'taxi.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': getenv('PG_DBNAME'),
+        'USER': getenv('PG_USER'),
+        'PASSWORD': getenv('PG_PASSWORD'),
+        'HOST': getenv('PG_HOST'),
+        'PORT': getenv('PG_PORT'),
+        "OPTIONS": {"options": "-c search_path=public,taxi"},
+        "TEST": {
+            "NAME": "test_db",
+        },
     }
 }
 
